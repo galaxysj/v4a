@@ -1,0 +1,45 @@
+{
+  "name": "v4a",
+  "version": "0.1.0",
+  "description": "Apply OpenAI V4A (apply_patch) format patches from CLI or API",
+  "type": "module",
+  "bin": {
+    "v4a": "./dist/cli.js"
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "v4a",
+    "apply-patch",
+    "diff",
+    "openai",
+    "codex"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^13.1.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.10",
+    "typescript": "^5.8.2",
+    "vitest": "^3.0.9"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

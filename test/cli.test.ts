@@ -108,6 +108,23 @@ describe('cli', () => {
     expect(await readFile(path.join(tempDir, 'stdin.txt'), 'utf-8')).toBe('stdin');
   });
 
+  it('applies a patch from explicit stdin with -', async () => {
+    await createTempDir();
+    const patch = [
+      BEGIN,
+      '*** Add File: explicit-stdin.txt',
+      '+stdin via dash',
+      END,
+    ].join('\n');
+
+    const output = await runCli(['patch', '-'], patch);
+
+    expect(output).toBe('add explicit-stdin.txt');
+    expect(await readFile(path.join(tempDir, 'explicit-stdin.txt'), 'utf-8')).toBe(
+      'stdin via dash',
+    );
+  });
+
   it('respects --allowed-types', async () => {
     await createTempDir();
     const patch = [

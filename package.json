@@ -1,7 +1,7 @@
 {
   "name": "v4a",
   "version": "0.1.0",
-  "description": "Apply OpenAI V4A (apply_patch) format patches from CLI or API",
+  "description": "OpenAI V4A Library",
   "type": "module",
   "bin": {
     "v4a": "dist/cli.js"

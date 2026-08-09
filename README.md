@@ -44,19 +44,19 @@ Requires Node.js 18 or newer.
 Apply a patch:
 
 ```bash
-v4a patch change.patch
+v4a apply change.patch
 ```
 
 Or pipe one directly:
 
 ```bash
-cat change.patch | v4a patch
+cat change.patch | v4a apply
 ```
 
 Check a patch without modifying anything:
 
 ```bash
-v4a patch change.patch --dry-run
+v4a apply change.patch --dry-run
 ```
 
 Validate its format:
@@ -73,18 +73,18 @@ v4a reverse change.patch > undo.patch
 
 ## CLI
 
-### `v4a patch`
+### `v4a apply`
 
 Apply a V4A patch to the filesystem.
 
 ```bash
-v4a patch change.patch
+v4a apply change.patch
 ```
 
 Patch input can come from a file or stdin:
 
 ```bash
-cat change.patch | v4a patch
+cat change.patch | v4a apply
 ```
 
 Applied operations are printed to stdout:
@@ -106,7 +106,7 @@ update src/old.ts -> src/new.ts
 Use `--dry-run` to parse and resolve the patch without writing files:
 
 ```bash
-v4a patch change.patch --dry-run
+v4a apply change.patch --dry-run
 ```
 
 ```text
@@ -119,7 +119,7 @@ v4a patch change.patch --dry-run
 Patch paths are resolved relative to the current directory by default.
 
 ```bash
-v4a patch change.patch --cwd ./project
+v4a apply change.patch --cwd ./project
 ```
 
 Paths that escape the selected working directory are rejected.
@@ -145,19 +145,19 @@ delete
 Allow only updates:
 
 ```bash
-v4a patch change.patch --allowed-types update
+v4a apply change.patch --allowed-types update
 ```
 
 Allow additions and updates:
 
 ```bash
-v4a patch change.patch --allowed-types add,update
+v4a apply change.patch --allowed-types add,update
 ```
 
 The option may also be repeated:
 
 ```bash
-v4a patch change.patch \
+v4a apply change.patch \
   --allowed-types add \
   --allowed-types update
 ```
@@ -165,7 +165,7 @@ v4a patch change.patch \
 Use `all` to explicitly allow every operation:
 
 ```bash
-v4a patch change.patch --allowed-types all
+v4a apply change.patch --allowed-types all
 ```
 
 This can be useful when patches come from another process and only a subset of filesystem operations should be accepted.
@@ -196,7 +196,7 @@ An invalid patch prints an error and exits with a non-zero status, which makes v
 
 ```bash
 if v4a validate generated.patch; then
-  v4a patch generated.patch
+  v4a apply generated.patch
 fi
 ```
 
@@ -217,7 +217,7 @@ v4a reverse change.patch > undo.patch
 It can also be applied immediately:
 
 ```bash
-v4a reverse change.patch | v4a patch
+v4a reverse change.patch | v4a apply
 ```
 
 For update hunks, added and removed lines are swapped.

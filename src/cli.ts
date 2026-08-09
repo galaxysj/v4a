@@ -131,7 +131,7 @@ async function main(): Promise<void> {
     addCwdOption(
       addPatchInput(
         program
-          .command('patch')
+          .command('apply')
           .description('Apply a V4A patch')
           .option('--dry-run', 'show planned operations without writing files', false),
       ),

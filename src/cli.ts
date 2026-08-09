@@ -24,7 +24,11 @@ async function readStdin(): Promise<string> {
 }
 
 async function resolvePatchText(file: string | undefined): Promise<string> {
-  if (file && file !== '-') {
+  if (file === '-') {
+    return readStdin();
+  }
+
+  if (file) {
     return readFile(file, 'utf-8');
   }
 

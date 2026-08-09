@@ -41,8 +41,12 @@ async function runCli(args: string[], input?: string): Promise<string> {
 }
 
 function runCliWithStdin(args: string[], input: string): Promise<string> {
+  return runNodeWithStdin([CLI, ...args], input);
+}
+
+function runNodeWithStdin(args: string[], input: string): Promise<string> {
   return new Promise((resolve, reject) => {
-    const child = spawn(process.execPath, [CLI, ...args], {
+    const child = spawn(process.execPath, args, {
       cwd: tempDir,
       stdio: ['pipe', 'pipe', 'pipe'],
     });
@@ -106,6 +110,45 @@ describe('cli', () => {
 
     expect(output).toBe('add stdin.txt');
     expect(await readFile(path.join(tempDir, 'stdin.txt'), 'utf-8')).toBe('stdin');
+  });
+
+  it('applies a patch from explicit stdin with -', async () => {
+    await createTempDir();
+    const patch = [
+      BEGIN,
+      '*** Add File: explicit-stdin.txt',
+      '+stdin via dash',
+      END,
+    ].join('\n');
+
+    const output = await runCli(['patch', '-'], patch);
+
+    expect(output).toBe('add explicit-stdin.txt');
+    expect(await readFile(path.join(tempDir, 'explicit-stdin.txt'), 'utf-8')).toBe(
+      'stdin via dash',
+    );
+  });
+
+  it('reads explicit stdin when stdin is a TTY', async () => {
+    await createTempDir();
+    const patch = [
+      BEGIN,
+      '*** Add File: tty-stdin.txt',
+      '+typed input',
+      END,
+    ].join('\n');
+    const bootstrap = [
+      "Object.defineProperty(process.stdin, 'isTTY', { value: true });",
+      `process.argv = [process.execPath, ${JSON.stringify(CLI)}, 'patch', '-'];`,
+      `import(${JSON.stringify(CLI)});`,
+    ].join('');
+
+    const output = await runNodeWithStdin(['--input-type=module', '--eval', bootstrap], patch);
+
+    expect(output).toBe('add tty-stdin.txt');
+    expect(await readFile(path.join(tempDir, 'tty-stdin.txt'), 'utf-8')).toBe(
+      'typed input',
+    );
   });
 
   it('respects --allowed-types', async () => {

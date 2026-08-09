@@ -24,6 +24,10 @@ async function readStdin(): Promise<string> {
 }
 
 async function resolvePatchText(file: string | undefined): Promise<string> {
+  if (file === '-') {
+    return readStdin();
+  }
+
   if (file) {
     return readFile(file, 'utf-8');
   }
@@ -33,7 +37,7 @@ async function resolvePatchText(file: string | undefined): Promise<string> {
   }
 
   throw new PatchError(
-    'No patch input provided. Pass a file argument or pipe patch text to stdin.',
+    'No patch input provided. Pass a file argument or pipe patch text to stdin (optionally using "-").',
   );
 }
 
@@ -80,7 +84,7 @@ async function loadDeletedFileContents(
 }
 
 function addPatchInput(command: CommandType): CommandType {
-  return command.argument('[file]', 'patch file to read');
+  return command.argument('[file]', 'patch file to read, or - for stdin');
 }
 
 function addAllowedTypesOption(command: CommandType): CommandType {

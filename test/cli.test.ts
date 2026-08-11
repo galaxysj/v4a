@@ -91,7 +91,7 @@ describe('cli', () => {
 
     await writeFile(patchPath, patch, 'utf-8');
 
-    const output = await runCli(['patch', patchPath]);
+    const output = await runCli(['apply', patchPath]);
 
     expect(output).toBe('add from-file.txt');
     expect(await readFile(path.join(cwd, 'from-file.txt'), 'utf-8')).toBe('from file');
@@ -106,7 +106,7 @@ describe('cli', () => {
       END,
     ].join('\n');
 
-    const output = await runCli(['patch'], patch);
+    const output = await runCli(['apply'], patch);
 
     expect(output).toBe('add stdin.txt');
     expect(await readFile(path.join(tempDir, 'stdin.txt'), 'utf-8')).toBe('stdin');
@@ -121,7 +121,7 @@ describe('cli', () => {
       END,
     ].join('\n');
 
-    const output = await runCli(['patch', '-'], patch);
+    const output = await runCli(['apply', '-'], patch);
 
     expect(output).toBe('add explicit-stdin.txt');
     expect(await readFile(path.join(tempDir, 'explicit-stdin.txt'), 'utf-8')).toBe(
@@ -139,7 +139,7 @@ describe('cli', () => {
     ].join('\n');
     const bootstrap = [
       "Object.defineProperty(process.stdin, 'isTTY', { value: true });",
-      `process.argv = [process.execPath, ${JSON.stringify(CLI)}, 'patch', '-'];`,
+      `process.argv = [process.execPath, ${JSON.stringify(CLI)}, 'apply', '-'];`,
       `import(${JSON.stringify(CLI)});`,
     ].join('');
 
@@ -160,10 +160,20 @@ describe('cli', () => {
     ].join('\n');
 
     await expect(
-      runCli(['patch', '--allowed-types', 'add'], patch),
+      runCli(['apply', '--allowed-types', 'add'], patch),
     ).rejects.toMatchObject({
       message: expect.stringContaining("Operation type 'delete' is not allowed"),
     });
+  });
+
+  it('applies a patch without writing operation output with --no-output', async () => {
+    await createTempDir();
+    const patch = [BEGIN, '*** Add File: quiet.txt', '+quiet', END].join('\n');
+
+    const output = await runCli(['apply', '--no-output'], patch);
+
+    expect(output).toBe('');
+    expect(await readFile(path.join(tempDir, 'quiet.txt'), 'utf-8')).toBe('quiet');
   });
 
   it('validate exits successfully for a valid patch', async () => {

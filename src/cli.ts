@@ -133,7 +133,8 @@ async function main(): Promise<void> {
         program
           .command('apply')
           .description('Apply a V4A patch')
-          .option('--dry-run', 'show planned operations without writing files', false),
+          .option('--dry-run', 'show planned operations without writing files', false)
+          .option('--no-output', 'do not print applied operations to stdout'),
       ),
     ),
   ).action(async (file: string | undefined, options) => {
@@ -145,6 +146,10 @@ async function main(): Promise<void> {
         cwd: options.cwd ?? process.cwd(),
         dryRun: options.dryRun,
       });
+
+      if (!options.output) {
+        return;
+      }
 
       const prefix = result.dryRun ? '[dry-run] ' : '';
 

@@ -101,6 +101,12 @@ Moves are shown explicitly:
 update src/old.ts -> src/new.ts
 ```
 
+Use `--no-output` to apply the patch without printing applied operations to stdout:
+
+```bash
+v4a apply change.patch --no-output
+```
+
 ### Dry run
 
 Use `--dry-run` to parse and resolve the patch without writing files:

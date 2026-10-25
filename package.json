@@ -1,6 +1,6 @@
 {
-  "name": "v4a",
-  "version": "0.1.0",
+  "name": "@galaxysj/v4a",
+  "version": "1.0.0",
   "description": "OpenAI V4A Library",
   "type": "module",
   "bin": {
